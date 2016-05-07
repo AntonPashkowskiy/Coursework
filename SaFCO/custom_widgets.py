@@ -27,16 +27,21 @@ class QViewer(QWidget):
         self.initUI()
         
     def initUI(self):
-        self.viewer_layout = QHBoxLayout()
+        self.viewer_layout = QVBoxLayout()
+        horizontal_layout = QHBoxLayout()
+        
         viewer_widget_palette = QPalette()
         viewer_widget_palette.setColor(QPalette.Background, QColor(constants.defaultViewerColor))
         self.setAutoFillBackground(True)
         self.setPalette(viewer_widget_palette)
-        self.setLayout(self.viewer_layout)
+        
+        horizontal_layout.addLayout(self.viewer_layout)
+        self.setLayout(horizontal_layout)
     
     def setView(self, view):
+        self.viewer_layout.addStretch(1)
         self.viewer_layout.addWidget(view)
-    
+        self.viewer_layout.addStretch(1)
     
 class QMarkablePicture(QLabel):
     def __init__(self, parent = None):

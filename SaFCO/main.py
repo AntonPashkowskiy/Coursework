@@ -2,7 +2,7 @@
 import sys
 from PyQt5.QtWidgets import  (QMainWindow, QApplication, QHBoxLayout, 
                               QVBoxLayout, QPushButton, QWidget,
-                              QColorDialog)
+                              QColorDialog, QScrollArea)
 from PyQt5.QtGui import QColor
 from custom_widgets import QMarksArea, QViewer, QToolbar
 import constants
@@ -10,7 +10,7 @@ import constants
 
 class StartWindow(QMainWindow):
     def __init__(self):
-        super().__init__()
+        QMainWindow.__init__(self)
         self.initUI()
            
     def initUI(self):
@@ -37,9 +37,12 @@ class StartWindow(QMainWindow):
         
         viewer = QViewer()
         viewer.setView(self.markable_area)
+        viewer_scroll = QScrollArea()
+        viewer_scroll.setWidget(viewer)
+        viewer_scroll.setWidgetResizable(True)
         
         main_layout.addWidget(toolbar)
-        main_layout.addWidget(viewer)
+        main_layout.addWidget(viewer_scroll)
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_widget = QWidget()
         main_widget.setLayout(main_layout)
@@ -50,8 +53,7 @@ class StartWindow(QMainWindow):
         self.showMaximized()
     
     def showColorSelectionDialog(self):
-        newColor = QColorDialog.getColor()
-        
+        newColor = QColorDialog.getColor() 
         if newColor.isValid():
             self.markable_area.setBrushColor(newColor)
             
