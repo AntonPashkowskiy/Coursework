@@ -1,38 +1,47 @@
 #!/usr/bin/python3
-import sys
 from PyQt5.QtWidgets import  (QMainWindow, QApplication, QHBoxLayout, 
                               QVBoxLayout, QPushButton, QWidget,
                               QColorDialog, QScrollArea)
 from PyQt5.QtGui import QColor
-from custom_widgets import QMarksArea, QViewer, QToolbar
+from state_handlers.ui.custom_widgets import QMarksArea, QViewer, QToolbar
 import constants
 
 
-class StartWindow(QMainWindow):
-    def __init__(self):
+class QMarksWindow(QMainWindow):
+    def __init__(self, data, complete, back):
         QMainWindow.__init__(self)
-        self.initUI()
+        self.initUI(data, complete, back)
            
-    def initUI(self):
+    def initUI(self, data, complete, back):
+        self.completeButtonClick = complete
+        self.backButtonClick = back
+    
         main_layout = QHBoxLayout()
          
         self.select_color_button = QPushButton("Choose color of marks")
         self.remove_mode_button = QPushButton("Remove mode")
         self.remove_mode_button.setCheckable(True)
         self.complete_button = QPushButton("Complete")
+        self.back_button = QPushButton("Back")
         
         self.select_color_button.clicked.connect(self.showColorSelectionDialog)
         self.remove_mode_button.clicked[bool].connect(self.toggleRemoveMode)
+        
+        if self.completeButtonClick != None:
+            self.complete_button.clicked.connect(self.completeButtonClick)
+        if self.backButtonClick != None:
+            self.back_button.clicked.connect(self.backButtonClick)
         
         toolbar = QToolbar()
         toolbar.addWidgetToToolbar(self.select_color_button)
         toolbar.addWidgetToToolbar(self.remove_mode_button)
         toolbar.addWidgetToToolbar(self.complete_button)
+        toolbar.addWidgetToToolbar(self.back_button)
         toolbar.addStretch(1)
         
         self.markable_area = QMarksArea()
-        self.markable_area.setMaximumSize(800, 700)
-        self.markable_area.loadImage('scheme.jpg')
+        self.markable_area.setMaximumSize(data.image_width, data.image_height)
+        self.markable_area.loadImage(data.image_url)
         self.markable_area.setBrushColor(QColor(constants.defaultBrushColor))       
         
         viewer = QViewer()
@@ -62,10 +71,10 @@ class StartWindow(QMainWindow):
             self.markable_area.setRemoveMode()
         else:
             self.markable_area.resetRemoveMode()
+    
+    def getMarks(self):
+        return self.markable_area.getMarks()
             
             
 if __name__ == '__main__':
-    
-    app = QApplication(sys.argv)
-    ex = StartWindow()
-    sys.exit(app.exec_())
+    pass

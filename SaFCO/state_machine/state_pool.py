@@ -4,9 +4,9 @@ class StatePool(object):
     def __init__(self):
         self.state_handlers = []
         self.current_state_index = 0
-    
-    def __addHandlerToPool(self, handler):
-        self.state_handlers.append(handler)
+        
+    def __currentStateHandler(self):
+        return self.state_handlers[self.current_state_index]
         
     def __previousStateHandler(self):
         if len(self.state_handlers) == 0:
@@ -44,12 +44,16 @@ class StatePool(object):
         state = current_handler.getState()
         new_handler.setState(state)
         current_handler.stopHandlerWork()
-        new_handler.startHandlerWork()     
+        new_handler.startHandlerWork()
+        
+    def addHandlerToStatePool(self, handler):
+        handler.setStateSwitchCallbacks(self.previousState, self.nextState)
+        self.state_handlers.append(handler)     
         
     def previousState(self):
         try:
             if len(self.state_handlers) > 0 and self.current_state_index != 0:
-                current_handler = self.state_handlers[self.current_state_index]
+                current_handler = self.__currentStateHandler()
                 new_handler = self.__previousStateHandler()
                 
                 self.__switchHandlers(current_handler, new_handler)
@@ -63,17 +67,19 @@ class StatePool(object):
                 if self.current_state_index == len(self.state_handlers) - 1:
                     return
                 else:
-                    current_handler = self.state_handlers[self.current_state_index]
+                    current_handler = self.__currentStateHandler()
                     new_handler = self.__nextStateHandler()
                     
                     self.__switchHandlers()
                     self.__incrementStateIndex()
         except Exception as unexpected_exception:
             print(unexpected_exception)
-    
-    def configurePool(self):
-        pass
-
+            
+    def start(self, state):
+        if len(self.state_handlers) > 0:
+            current_handler = self.__currentStateHandler()
+            current_handler.setState(state)
+            current_handler.startHandlerWork()
 
 if __name__ == '__main__':
     pass

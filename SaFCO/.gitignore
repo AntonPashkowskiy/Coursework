@@ -2,3 +2,6 @@
 ./__pycache__/*
 *.wpr
 *.wpu
+*.pyc
+./*.pyc
+./*/.pyc
