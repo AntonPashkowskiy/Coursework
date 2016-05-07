@@ -62,8 +62,8 @@ class StartWindow(QMainWindow):
             self.markable_area.setRemoveMode()
         else:
             self.markable_area.resetRemoveMode()
-
-
+            
+            
 if __name__ == '__main__':
     
     app = QApplication(sys.argv)
