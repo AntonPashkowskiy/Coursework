@@ -39,7 +39,7 @@ class StatePool(object):
             self.current_state_index = 0
             
     def __switchHandlers(self, current_handler, new_handler):
-        if current_handler == None || new_handler == None:
+        if current_handler == None or new_handler == None:
             raise Exception("State pool error. Undefined handlers.")
         state = current_handler.getState()
         new_handler.setState(state)
@@ -48,7 +48,7 @@ class StatePool(object):
         
     def previousState(self):
         try:
-            if len(self.state_handlers) > 0 && self.current_state_index != 0:
+            if len(self.state_handlers) > 0 and self.current_state_index != 0:
                 current_handler = self.state_handlers[self.current_state_index]
                 new_handler = self.__previousStateHandler()
                 
