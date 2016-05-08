@@ -1,7 +1,6 @@
-./__pycache__
-./__pycache__/*
+*/__pycache__
+*/__pycache__/*
 *.wpr
 *.wpu
 *.pyc
-./*.pyc
-./*/.pyc
+*.pyc
