@@ -100,26 +100,55 @@ def connect(port_path, trying_count=3):
             break
     return connect_result
 
-
-def move_drill(x, y):
-    port = get_port()
-    move_command = get_command(constants.move_command, [x, y])
+def write_command(port, command):
     port.flushInput()
-    port.write(move_command)
+    port.write(command)
     port.flush()
-        
+    
+
+def wait_response(port, is_bool_response=True):
     while(True):
         response = port.readline()
             
         if len(response) > 0:
             port.flushOutput()
-            return parse_response(response)
-                    
+            return parse_response(response, is_bool_response)
+    
+
+def move_drill(x, y):
+    port = get_port()
+    move_command = get_command(constants.move_command, [x, y])
+    write_command(port, move_command)
+    return wait_response(port)
+
+
+def drill_circuit(x, y):
+    port = get_port()
+    drill_command = get_command(constants.drill_command, [x, y])
+    write_command(port, drill_command)
+    return wait_response(port)
+            
+
+def touch_circuit():
+    port = get_port()
+    touch_command = get_command(constants.touch_command)
+    write_command(port, touch_command)
+    return wait_response(port)
+
+
+def get_drill_coordinates():
+    port = get_port()
+    coordinates_command = get_command(constants.coordinates_command)
+    write_command(port, coordinates_command)
+    return wait_response(port, False)
 
 if __name__ == "__main__":
     open_driller_port()
         
-    print(move_drill(0, 500))
-    print(move_drill(500, 500))
+    print(touch_circuit())
+    print(move_drill(0, 900))
+    print(drill_circuit(0, 1000))
+    print(get_drill_coordinates())
+    print(touch_circuit())
     
     close_driller_port()
