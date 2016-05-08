@@ -7,3 +7,6 @@ ellipsWidth = 5
 ellipsHeight = 5
 
 epsilon = 5
+
+#commands for arduino
+connect = b"connect:"
