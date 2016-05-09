@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import serial
-import constants
+from com import constants
 from os import listdir
 
 
@@ -49,14 +49,17 @@ def get_command(command_prefix, parameters=[]):
 
 
 def check_for_fatal_errors(response):
-    pass 
+    if response == constants.fatal_error:
+        raise RuntimeError("Command not supported")
+    elif response == constants.power_supply_error:
+        raise RuntimeError("Power supply error") 
 
 
 #response example b"res: 1\n", b"res: 0\n", b"res: 200, 230\n"
 def parse_response(response, is_bool_response=True):
-    check_for_fatal_errors(response)
     cut_response = response.replace(b"\n", b"")
     cut_response = cut_response.replace(b"\r", b"")
+    check_for_fatal_errors(cut_response)
     
     if is_bool_response:
         response_parts = cut_response.split(b" ")

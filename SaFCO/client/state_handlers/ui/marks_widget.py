@@ -1,15 +1,14 @@
 #!/usr/bin/python3
-from PyQt5.QtWidgets import  (QMainWindow, QApplication, QHBoxLayout, 
-                              QVBoxLayout, QPushButton, QWidget,
+from PyQt5.QtWidgets import  (QHBoxLayout, QVBoxLayout, QPushButton, QWidget,
                               QColorDialog, QScrollArea)
 from PyQt5.QtGui import QColor
 from state_handlers.ui.custom_widgets import QMarksArea, QViewer, QToolbar
 import constants
 
 
-class QMarksWindow(QMainWindow):
+class QMarksWidget(QWidget):
     def __init__(self, data, complete, back):
-        QMainWindow.__init__(self)
+        QWidget.__init__(self)
         self.initUI(data, complete, back)
            
     def initUI(self, data, complete, back):
@@ -41,7 +40,7 @@ class QMarksWindow(QMainWindow):
         
         self.markable_area = QMarksArea()
         self.markable_area.setMaximumSize(data.image_width, data.image_height)
-        self.markable_area.loadImage(data.image_url)
+        self.markable_area.loadImage(data.image_path)
         self.markable_area.setBrushColor(QColor(constants.defaultBrushColor))       
         
         viewer = QViewer()
@@ -53,13 +52,7 @@ class QMarksWindow(QMainWindow):
         main_layout.addWidget(toolbar)
         main_layout.addWidget(viewer_scroll)
         main_layout.setContentsMargins(0, 0, 0, 0)
-        main_widget = QWidget()
-        main_widget.setLayout(main_layout)
-        
-        self.setCentralWidget(main_widget)
-        self.setMinimumSize(300, 300)
-        self.setWindowTitle('Marks')
-        self.showMaximized()
+        self.setLayout(main_layout)
     
     def showColorSelectionDialog(self):
         newColor = QColorDialog.getColor() 

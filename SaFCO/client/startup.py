@@ -8,11 +8,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     state_pool = CustomStatePool()
     state = StateData()
-    
-    state.image_width = 800
-    state.image_height = 700
-    state.image_url = "scheme.jpg"
-    
+        
     state_pool.configureStatePool()
     state_pool.start(state)
     

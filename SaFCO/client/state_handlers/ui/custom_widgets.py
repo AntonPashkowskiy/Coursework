@@ -12,6 +12,7 @@ class QToolbar(QWidget):
     def initUI(self):
         self.tools_layout = QVBoxLayout()
         self.setMaximumWidth(constants.toolbarMaxWidth)
+        self.setMinimumWidth(constants.toolbarMinWidth)
         self.setLayout(self.tools_layout)
     
     def addWidgetToToolbar(self, widget):
@@ -48,6 +49,8 @@ class QMarkablePicture(QLabel):
         QLabel.__init__(self, parent)
         self.initBrush()
         self.marks = []
+        self.is_marks_count_limited = False
+        self.marks_count_limit = 0
             
     def initBrush(self):
         self.brush = QBrush(Qt.SolidPattern)
@@ -66,8 +69,9 @@ class QMarkablePicture(QLabel):
         self.brush.setColor(color)    
         
     def drawMark(self, mark):
-        self.marks.append(mark)
-        self.update()
+        if self.__isAbleDrawMark():
+            self.marks.append(mark)
+            self.update()
     
     def removeMark(self, mark):
         for painted_mark in self.marks:
@@ -78,6 +82,15 @@ class QMarkablePicture(QLabel):
         
     def getMarks(self):
         return self.marks.copy()
+    
+    def setMarksCountLimit(self, limit):
+        self.is_marks_count_limited = True
+        self.marks_count_limit = limit
+        
+    def __isAbleDrawMark(self):
+        limit_enabled_condition = self.is_marks_count_limited and (len(self.marks) < self.marks_count_limit)
+        limit_disabled_condition = not self.is_marks_count_limited
+        return limit_enabled_condition or limit_disabled_condition
     
     def __isApproximatelyEqual(self, firstMark, secondMark, epsilon):
         full_equality = firstMark == secondMark
@@ -121,6 +134,9 @@ class QMarksArea(QWidget):
           
     def setBrushColor(self, color):
         self.markable_picture.setBrushColor(color)
+        
+    def setMarksCountLimit(self, limit):
+        self.markable_picture.setMarksCountLimit(limit)
     
     def drawMark(self, position):
         self.markable_picture.drawMark(position)
@@ -136,6 +152,27 @@ class QMarksArea(QWidget):
     
     def getMarks(self):
         return self.markable_picture.getMarks()
+        
+
+class QImageArea(QWidget):
+    def __init__(self, parent=None):
+        QWidget.__init__(self, parent)   
+    
+    def loadImage(self, path):
+        self.picture_label = QLabel(self)
+        hbox = QHBoxLayout(self)
+        self.picture = QPixmap(path)
+                
+        self.picture_label.setPixmap(self.picture)
+        hbox.addWidget(self.picture_label)
+        hbox.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(hbox)
+    
+    def getImageWidth(self):
+        return self.picture.width()
+    
+    def getImageHeight(self):
+        return self.picture.height()
     
     
 if __name__ == '__main__':

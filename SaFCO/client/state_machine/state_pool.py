@@ -33,7 +33,7 @@ class StatePool(object):
             self.current_state_index = len(self.state_handlers) - 1
     
     def __incrementStateIndex(self):
-        if self.current_state_index != len(self.current_state_index) - 1:
+        if self.current_state_index != len(self.state_handlers) - 1:
             self.current_state_index += 1
         else:
             self.current_state_index = 0
@@ -70,7 +70,7 @@ class StatePool(object):
                     current_handler = self.__currentStateHandler()
                     new_handler = self.__nextStateHandler()
                     
-                    self.__switchHandlers()
+                    self.__switchHandlers(current_handler, new_handler)
                     self.__incrementStateIndex()
         except Exception as unexpected_exception:
             print(unexpected_exception)
