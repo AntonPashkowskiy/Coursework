@@ -147,12 +147,13 @@ def get_drill_coordinates():
     return wait_response(port, False)
 
 if __name__ == "__main__":
-    open_driller_port()
+    pass
+    #open_driller_port()
         
-    print(touch_circuit())
-    print(move_drill(0, 900))
-    print(drill_circuit(0, 1000))
-    print(get_drill_coordinates())
-    print(touch_circuit())
+    #print(touch_circuit())
+    #print(move_drill(0, 900))
+    #print(drill_circuit(0, 1000))
+    #print(get_drill_coordinates())
+    #print(touch_circuit())
     
-    close_driller_port()
+    #close_driller_port()

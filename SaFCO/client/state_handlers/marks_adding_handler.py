@@ -2,6 +2,8 @@
 from state_machine.state_handler import StateHandler
 from state_handlers.ui.marks_widget import QMarksWidget
 from state_handlers.ui.main_window import set_widget
+from state_handlers.utils.calculating_utils import translate_coordinates
+import constants
 
 
 class MarksAddingHandler(StateHandler):
@@ -11,7 +13,8 @@ class MarksAddingHandler(StateHandler):
         
     def getState(self):
         if (self.widget != None):
-            self.state_data.marks = self.widget.getMarks()
+            marks = self.widget.getMarks()
+            self.state_data.coordinates = translate_coordinates(marks, constants.pixels_on_millimetr)
         return self.state_data
     
     def startHandlerWork(self):
