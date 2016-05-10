@@ -35,6 +35,7 @@ def open_driller_port():
             return True
         else:
             raise RuntimeError("Driller port not found")
+    raise RuntimeError("Device is not plugged in")
          
             
 def get_command(command_prefix, parameters=[]):

@@ -9,5 +9,4 @@ ellipsHeight = 5
 
 epsilon = 5
 
-#commands for arduino
-connect = b"connect:"
+pixels_on_millimetr = 3.77

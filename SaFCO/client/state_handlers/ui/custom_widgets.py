@@ -151,7 +151,8 @@ class QMarksArea(QWidget):
         self.markable_picture.removeMark(position)
     
     def getMarks(self):
-        return self.markable_picture.getMarks()
+        marks = self.markable_picture.getMarks()
+        return [(mark.x(), mark.y()) for mark in marks]
         
 
 class QImageArea(QWidget):

@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import  (QHBoxLayout, QVBoxLayout, QPushButton, QWidget,
 from PyQt5.QtGui import QColor
 from PyQt5 import QtCore
 from state_handlers.ui.custom_widgets import QMarksArea, QViewer, QToolbar
-from com import constants as com_constants
+from com import constants as device_constants
 from com.drill_positioning import DrillPositioningManager
 import constants
 
@@ -16,7 +16,6 @@ class QScaleCalculatingWidget(QWidget):
         self.is_drill_positioning_mode = False
         self.drill_positioning_manager = None
         self.coordinates_from_drill = []
-        self.coordinates_from_image = []
            
     def initUI(self, data, complete, back):
         self.completeButtonClick = complete
@@ -36,10 +35,10 @@ class QScaleCalculatingWidget(QWidget):
         self.touch_circuit_button.clicked.connect(self.touchCircuit)
         self.get_coordinate_button.clicked.connect(self.getCoordinateFromDrill)
         self.remove_mode_button.clicked[bool].connect(self.toggleRemoveMode)
-        self.drill_mode_button.clicked[bool].connect(self.toggleDrillMode)
+        self.drill_mode_button.clicked[bool].connect(self.toggleDrillPositioningMode)
         
         if self.completeButtonClick != None:
-            self.complete_button.clicked.connect(self.completeButtonClick)
+            self.complete_button.clicked.connect(self.handleCompleteButtonClick)
         if self.backButtonClick != None:
             self.back_button.clicked.connect(self.backButtonClick)
         
@@ -68,13 +67,16 @@ class QScaleCalculatingWidget(QWidget):
         main_layout.addWidget(viewer_scroll)
         main_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(main_layout)
-       
-    def getMarks(self):
+        
+    def getCoordinatesFromImage(self):
         return self.markable_area.getMarks()
+        
+    def getCoordinatesFromDrill(self):
+        return self.coordinates_from_drill.copy()
         
     def touchCircuit(self):
         if self.is_drill_positioning_mode:
-            print("touch circuit")
+            self.drill_positioning_manager.touchToCircuit()
             
     def toggleRemoveMode(self, pressed):
         if pressed:
@@ -82,7 +84,7 @@ class QScaleCalculatingWidget(QWidget):
         else:
             self.markable_area.resetRemoveMode()
         
-    def toggleDrillMode(self, pressed):
+    def toggleDrillPositioningMode(self, pressed):
         try:
             if self.is_drill_positioning_mode:
                 self.drill_positioning_manager.disconnectDrill()
@@ -98,35 +100,36 @@ class QScaleCalculatingWidget(QWidget):
     def getCoordinateFromDrill(self):
         if self.drill_positioning_manager != None:
             coordinate = self.drill_positioning_manager.getDrillCoordinate()
-            self.coordinates_from_drill.append(coordinate)    
+            if coordinate != None:
+                self.coordinates_from_drill.append(coordinate)
+            
+    def handleCompleteButtonClick(self):
+        marks = self.getCoordinatesFromImage()
+        
+        if len(self.coordinates_from_drill) >= 2 and len(marks) >= 2:
+            self.completeButtonClick()
+        else:
+            QMessageBox.warning(self, "Scale calculating error", 
+                "Not enought coordinates for scale calcualting")    
     
     def keyPressEvent(self, event):
+        if event.isAutoRepeat():
+            return
         try:
             if self.is_drill_positioning_mode:
                 if event.key() == QtCore.Qt.Key_W:
-                    self.drill_positioning_manager.moveTo(com_constants.top_direction)
+                    self.drill_positioning_manager.startPositioning(device_constants.top_direction)
                 elif event.key() == QtCore.Qt.Key_S:
-                    self.drill_positioning_manager.moveTo(com_constants.bottom_direction)
+                    self.drill_positioning_manager.startPositioning(device_constants.bottom_direction)
                 elif event.key() == QtCore.Qt.Key_A:
-                    self.drill_positioning_manager.moveTo(com_constants.left_direction)
+                    self.drill_positioning_manager.startPositioning(device_constants.left_direction)
                 elif event.key() == QtCore.Qt.Key_D:
-                    self.drill_positioning_manager.moveTo(com_constants.right_direction)
+                    self.drill_positioning_manager.startPositioning(device_constants.right_direction)
+                elif event.key() == QtCore.Qt.Key_Escape:
+                    self.drill_positioning_manager.stopPositioning()
         except RuntimeError as error:
             QMessageBox.critical(self, "Error", str(error))
-    
-    def keyReleaseEvent(self, event):
-        try:
-            if self.is_drill_positioning_mode:
-                if event.key() == QtCore.Qt.Key_W:
-                    self.drill_positioning_manager.stop()
-                elif event.key() == QtCore.Qt.Key_S:
-                    self.drill_positioning_manager.stop()
-                elif event.key() == QtCore.Qt.Key_A:
-                    self.drill_positioning_manager.stop()
-                elif event.key() == QtCore.Qt.Key_D:
-                    self.drill_positioning_manager.stop()
-        except RuntimeError as error:
-            QMessageBox.critical(self, "Error", str(error))
+            
             
 if __name__ == '__main__':
     pass
