@@ -16,7 +16,7 @@ def calculate_scale(first_coordinates, second_coordinates):
     first_line_length = sqrt(cathetus_sqr1 + cathetus_sqr2)
     cathetus_sqr1 = abs(second_coordinates[0][0] - second_coordinates[1][0]) ** 2
     cathetus_sqr2 = abs(second_coordinates[0][1] - second_coordinates[1][1]) ** 2 
-    second_line_length = sqrt(cathetus_sqr1 + cathetus_sqr2)        
+    second_line_length = sqrt(cathetus_sqr1 + cathetus_sqr2)    
             
 if __name__ == '__main__':
     pass

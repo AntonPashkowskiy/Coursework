@@ -5,6 +5,7 @@ from state_handlers.utils.calculating_utils import translate_coordinates
 from state_handlers.ui.main_window import set_widget
 from com import constants
 from com import com_provider
+from functools import cmp_to_key
 
 
 class DrillingHandler(StateHandler):
@@ -24,6 +25,7 @@ class DrillingHandler(StateHandler):
                             for coordinate in self.state_data.coordinates]
             translate_cooficient = 1 / constants.steps_on_millimetr
             coordinates = translate_coordinates(coordinates, translate_cooficient)
+            coordinates = self.sortCoordinatesForDrilling(coordinates)
 
             try:
                 pass
@@ -36,7 +38,19 @@ class DrillingHandler(StateHandler):
         self.widget.setDrillingCompleteState(True)
     
     def stopHandlerWork(self):
-        self.widget.hide()    
+        self.widget.hide() 
+        
+    def sortCoordinatesForDrilling(self, coordinates):
+        def compare(left, right):
+            left_x, left_y = left
+            right_x, right_y = right
+            x_diff = left_x - right_x
+            
+            if x_diff == 0:
+                return left_y - right_y
+            return x_diff
+            
+        return sorted(coordinates, key=cmp_to_key(compare))   
 
 
 if __name__ == '__main__':
