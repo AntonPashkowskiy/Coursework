@@ -63,15 +63,20 @@ void serialEvent() {
 
     // power dependent commands
     if (command == "move") {
-      pinMode(13, OUTPUT);
-      digitalWrite(13, HIGH);
       long x = Serial.parseInt();
       long y = Serial.parseInt();
       readAllDataFromSerial();
       bool res = driller->MoveTo(x, y);
+    //   if(res) {
+    //       digitalWrite(12, HIGH);
+    //   } else {
+    //       digitalWrite(11, HIGH);
+    //   }
+    //   delay(1500);
+    //   digitalWrite(11, LOW);
+    //   digitalWrite(12, LOW);
       Serial.print("res: ");
       Serial.println(res);
-      digitalWrite(13, LOW);
     } else if (command == "drill") {
       long x = Serial.parseInt();
       long y = Serial.parseInt();
