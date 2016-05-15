@@ -6,6 +6,7 @@ from state_handlers.ui.main_window import set_widget
 from com import constants
 from com import com_provider
 from functools import cmp_to_key
+from pprint import pprint
 
 
 class DrillingHandler(StateHandler):
@@ -20,13 +21,18 @@ class DrillingHandler(StateHandler):
         self.widget.showInformationMessage("Drilling", "Drilling in progress. Pleace, wait.")
                     
         if self.state_data.coordinates != None:
+            pprint(self.state_data.coordinates)
+            pprint(self.state_data.scale)
+            
             scale = self.state_data.scale
             coordinates = [(coordinate[0] * scale, coordinate[1] * scale) 
                             for coordinate in self.state_data.coordinates]
             translate_cooficient = 1 / constants.steps_on_millimetr
             coordinates = translate_coordinates(coordinates, translate_cooficient)
             coordinates = self.sortCoordinatesForDrilling(coordinates)
-
+            
+            pprint(coordinates)
+            
             try:
                 pass
                 com_provider.open_driller_port()

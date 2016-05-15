@@ -127,6 +127,8 @@ def move_drill(x, y):
 
 
 def drill_circuit(x, y):
+    x = int(x)
+    y = int(y)
     port = get_port()
     drill_command = get_command(constants.drill_command, [x, y])
     write_command(port, drill_command)
