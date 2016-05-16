@@ -2,9 +2,7 @@
 from state_machine.state_handler import StateHandler
 from state_handlers.ui.scale_calculating_widget import QScaleCalculatingWidget
 from state_handlers.ui.main_window import set_widget
-from state_handlers.utils.calculating_utils import translate_coordinates, calculate_scale
-from com import constants as device_constants
-import constants as global_constants
+from state_handlers.utils.calculating_utils import calculate_scale
 
 
 class ScaleCalculatingHandler(StateHandler):
@@ -14,11 +12,10 @@ class ScaleCalculatingHandler(StateHandler):
 
     def getState(self):
         if self.widget is not None:
-            image_coordinates = self.widget.getCoordinatesFromImage()
-            circuit_coordinates = self.widget.getCoordinatesFromDrill()
-            image_coordinates = translate_coordinates(image_coordinates, global_constants.pixels_on_millimetr)
-            circuit_coordinates = translate_coordinates(circuit_coordinates, device_constants.steps_on_millimetr)
-            self.state_data.scale = calculate_scale(circuit_coordinates, image_coordinates)
+            self.state_data.circuit_coordinates = self.widget.getCoordinatesFromDrill()
+            self.state_data.image_coordinates = self.widget.getCoordinatesFromImage()
+            self.state_data.scale = calculate_scale(self.state_data.circuit_coordinates,
+                                                    self.state_data.image_coordinates)
             return self.state_data
         return self.state_data
 

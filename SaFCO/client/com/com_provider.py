@@ -122,16 +122,14 @@ def wait_response(port, is_bool_response=True):
 
 def move_drill(x, y):
     port = get_port()
-    move_command = get_command(constants.move_command, [x, y])
+    move_command = get_command(constants.move_command, [int(x), int(y)])
     write_command(port, move_command)
     return wait_response(port)
 
 
 def drill_circuit(x, y):
-    x = int(x)
-    y = int(y)
     port = get_port()
-    drill_command = get_command(constants.drill_command, [x, y])
+    drill_command = get_command(constants.drill_command, [int(x), int(y)])
     write_command(port, drill_command)
     return wait_response(port)
 
