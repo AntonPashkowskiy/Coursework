@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from math import sin, cos, asin, sqrt
 
 
@@ -30,10 +31,13 @@ def calculate_scale(circuit_coordinates, image_coordinates):
 def translate_coordinates(circuit_coordinates, image_coordinates, scale, point):
     a_r, b_r = circuit_coordinates
     a_i, b_i = image_coordinates
-    point_r_not_rotated = (a_r[0] + (point[0] - a_i[0]) * scale[0],
-                           a_r[1] + (point[1] - a_i[1]) * scale[1])
+    point_r_not_rotated = (a_r[0] - (point[1] - a_i[1]) * scale[1],
+                           a_r[1] + (point[0] - a_i[0]) * scale[0])
     # angle_i = asin((a_i[1] - b_i[1]) / sqrt((a_i[0] - b_i[0]) ** 2 + (a_i[1] - b_i[1]) ** 2))
     # angle_r = asin((a_r[1] - b_r[1]) / sqrt((a_r[0] - b_r[0]) ** 2 + (a_r[1] - b_r[1]) ** 2))
     # diff_angle = angle_i - angle_r
     # c_r = (cos(diff_angle) * point_r_not_rotated[0], sin(diff_angle) * point_r_not_rotated[1])
     return point_r_not_rotated
+
+    if __name__ == '__main__':
+        a_r = ()

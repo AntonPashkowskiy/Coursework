@@ -23,14 +23,17 @@ class DrillingHandler(StateHandler):
             print('circ:', self.state_data.circuit_coordinates)
             print('image: ', self.state_data.image_coordinates)
             print('scale', self.state_data.scale)
+            print('points before:')
+            pprint(self.state_data.coordinates)
 
             scale = self.state_data.scale
             circuit_coordinates = self.state_data.circuit_coordinates
             image_coordinates = self.state_data.image_coordinates
             points = [translate_coordinates(circuit_coordinates, image_coordinates, scale, point)
                       for point in self.state_data.coordinates]
-            points = self.sortCoordinatesForDrilling(points)
+            # points = self.sortCoordinatesForDrilling(points)
 
+            print('points after:')
             pprint(points)
 
             try:
